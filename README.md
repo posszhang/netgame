@@ -34,11 +34,7 @@ ln -s $GOPATH/src/github.com/golang/ $GOPATH/src/golang.org/x
 
 ## 服务器架构拆解
 * superserver `服务器管理器，所有的服务器均要连接次服务`
-<br/>
-<br/>
 * routeserver `路由服务器，主要做消息路由，解耦服务器关系` 
-<br/>
-<br/>
 * loginserver `登陆服务器，多点，用来做渠道sdk登陆等其他功能` <br/>
 
 <br/>
