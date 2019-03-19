@@ -8,7 +8,7 @@ export GOPATH=/home/posszhang/gamenet
 
 <br/>
 
-然后执行env.sh脚本，里面包含项目中依赖的各种和其他相关的设置
+然后执行`env.sh`脚本，里面包含项目中依赖库和各种其他相关的设置
 ```Bash
 go get github.com/golang/protobuf/proto
 go get github.com/gorilla/websocket
@@ -28,4 +28,4 @@ mkdir $GOPATH/src/golang.org
 ln -s $GOPATH/src/github.com/golang/ $GOPATH/src/golang.org/x
 ```
 <br/> 
-进入src目录执行,make即可编译
+进入src目录执行,`make`即可编译
