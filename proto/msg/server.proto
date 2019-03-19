@@ -19,3 +19,12 @@ message NotifyRouteServerAdd {
 	ServerInfo Info = 1;
 }
 
+//刷新网络服务器列表
+message NotifyGatewayList {
+	repeated ServerInfo Serverlist = 1;
+}
+
+//刷新网关服务器在线
+message UpdateGatewayOnline {
+	map<uint32, uint32> Onlinemap = 1;
+}
