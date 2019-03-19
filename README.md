@@ -33,21 +33,21 @@ ln -s $GOPATH/src/github.com/golang/ $GOPATH/src/golang.org/x
 <br/>
 
 ### 服务器架构拆解
->superserver `服务器管理器，所有的服务器均要连接次服务`
+> superserver `服务器管理器，所有的服务器均要连接次服务`
 <br/>
 <br/>
->routeserver `路由服务器，主要做消息路由，解耦服务器关系` 
+> routeserver `路由服务器，主要做消息路由，解耦服务器关系` 
 <br/>
 <br/>
->loginserver `登陆服务器，多点，用来做渠道sdk登陆等其他功能` <br/>
+> loginserver `登陆服务器，多点，用来做渠道sdk登陆等其他功能` <br/>
 
 <br/>
->gatewayserver `网络服务器，多点，代理用户之后所有的数据通信` <br/>
+> gatewayserver `网络服务器，多点，代理用户之后所有的数据通信` <br/>
 <br/>
->sessionserver `会话服务器，暂单点，可以做成多点，目前没这必要，尽量少逻辑，保存用户状态` <br/>
+> sessionserver `会话服务器，暂单点，可以做成多点，目前没这必要，尽量少逻辑，保存用户状态` <br/>
 <br/>
->logicserver(rpg中又称为sceneserver) `逻辑服务器，rpg中又称为地图服务器` <br/>
+> logicserver(rpg中又称为sceneserver) `逻辑服务器，rpg中又称为地图服务器` <br/>
 <br/>
->recordserver `数据库服务器，可多点，滚服游单点即可，oneworld可设计多点，0用来作为数据库结点分配器，1-N实际用来处理用户数据`
+> recordserver `数据库服务器，可多点，滚服游单点即可，oneworld可设计多点，0用来作为数据库结点分配器，1-N实际用来处理用户数据`
 <br/>
 
