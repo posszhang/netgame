@@ -9,13 +9,13 @@ export GOPATH=/home/posszhang/gamenet
 <br/>
 
 然后执行env.sh脚本，里面包含项目中依赖的各种和其他相关的设置
-```bash
+```Bash
 go get github.com/golang/protobuf/proto
 go get github.com/gorilla/websocket
 go get github.com/xtaci/kcp-go
 go get github.com/sirupsen/logrus
 
-//因特殊原因，走github下载
+#因特殊原因，走github下载
 git clone https://github.com/golang/crypto.git $GOPATH/src/github.com/golang/crypto
 git clone https://github.com/golang/net.git $GOPATH/src/github.com/golang/net
 git clone https://github.com/golang/sys.git $GOPATH/src/github.com/golang/sys
