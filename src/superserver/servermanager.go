@@ -114,3 +114,18 @@ func (mgr *ServerManager) NotifyRouteServerAdd(task *ServerTask) {
 
 	mgr.SendCmdToAllExceptionType(msg, command.RouteServer)
 }
+
+//刷新网关服务器列表到登陆服务器
+func (mgr *ServerManager) NotifyGate2Login(task *ServerTask) {
+	msg := new(command.NotifyGatewayList)
+
+	serverlist := mgr.GetByType(command.GatewayServer)
+	msg.Serverlist = make([]*command.ServerInfo, 0, len(serverlist))
+
+	for _, server := range serverlist {
+		info := server.GetServerInfo()
+		msg.Serverlist = append(msg.Serverlist, &info)
+	}
+
+	task.SendCmd(msg)
+}

@@ -45,12 +45,19 @@ func (task *ServerTask) VerifyConn(msg *command.Message) bool {
 
 func (task *ServerTask) onServerAddCallback() {
 
+	srvtp := task.serverinfo.Type
+
 	//不是路由服务器，则广播路由服务器
-	if task.serverinfo.Type != command.RouteServer {
+	if srvtp != command.RouteServer {
 		serverManager.NotifyRouteServerInit(task)
 	} else {
 		//是路由服务器代表主动新增
 		serverManager.NotifyRouteServerAdd(task)
+	}
+
+	//登陆服务器新增，主动刷新网关
+	if srvtp == command.GatewayServer {
+		serverManager.NotifyGate2Login(task)
 	}
 
 }
@@ -59,7 +66,14 @@ func (task *ServerTask) RecycleConn() bool {
 
 	serverManager.UniqueRemove(task)
 
+	task.onServerRemoveCallback()
+
 	return true
+}
+
+func (task *ServerTask) onServerRemoveCallback() {
+
+	//srvtp := task.serverinfo.Type
 }
 
 func (task *ServerTask) GetID() uint32 {
