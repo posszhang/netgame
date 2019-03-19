@@ -29,3 +29,15 @@ ln -s $GOPATH/src/github.com/golang/ $GOPATH/src/golang.org/x
 ```
 <br/> 
 进入src目录执行`make`即可编译，当然你也可以根据自己的实际情况修改Makefile文件
+
+<br/>
+
+>###服务器架构拆解
+>>superserver
+>>routeserver
+>>loginserver
+>>gatewayserver
+>>sessionserver
+>>logicserver(rpg中又称为sceneserver)
+>>recordserver
+
