@@ -32,7 +32,7 @@ ln -s $GOPATH/src/github.com/golang/ $GOPATH/src/golang.org/x
 
 <br/>
 
-###服务器架构拆解
+### 服务器架构拆解
 >superserver `服务器管理器，所有的服务器均要连接次服务`
 <br/>
 <br/>
