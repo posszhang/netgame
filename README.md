@@ -38,6 +38,6 @@ ln -s $GOPATH/src/github.com/golang/ $GOPATH/src/golang.org/x
 * loginserver `登陆服务器，多点，用来做渠道sdk登陆等其他功能` 
 * gatewayserver `网络服务器，多点，代理用户之后所有的数据通信` 
 * sessionserver `会话服务器，暂单点，可以做成多点，目前没这必要，尽量少逻辑，保存用户状态` 
-* logicserver(rpg中又称为sceneserver) `逻辑服务器，rpg中又称为地图服务器` 
+* logicserver `逻辑服务器，rpg中又称为sceneserver, 场景服务器` 
 * recordserver `数据库服务器，可多点，滚服游单点即可，oneworld可设计多点，0用来作为数据库结点分配器，1-N实际用来处理用户数据`
 
