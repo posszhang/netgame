@@ -32,12 +32,12 @@ ln -s $GOPATH/src/github.com/golang/ $GOPATH/src/golang.org/x
 
 <br/>
 
->###服务器架构拆解
->>superserver
->>routeserver
->>loginserver
->>gatewayserver
->>sessionserver
->>logicserver(rpg中又称为sceneserver)
->>recordserver
+###服务器架构拆解
+>superserver
+>routeserver
+>loginserver
+>gatewayserver
+>sessionserver
+>logicserver(rpg中又称为sceneserver)
+>recordserver
 
