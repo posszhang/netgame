@@ -27,7 +27,8 @@ mkdir $GOPATH/src/golang.org
 #因特殊原因，设置软链
 ln -s $GOPATH/src/github.com/golang/ $GOPATH/src/golang.org/x
 ```
-<br/> 
+<br/>
+
 进入src目录执行`make`即可编译，当然你也可以根据自己的实际情况修改Makefile文件
 
 <br/>
@@ -41,3 +42,4 @@ ln -s $GOPATH/src/github.com/golang/ $GOPATH/src/golang.org/x
 * logicserver `逻辑服务器，rpg中又称为sceneserver, 场景服务器` 
 * recordserver `数据库服务器，可多点，滚服游单点即可，oneworld可设计多点，0用来作为数据库结点分配器，1-N实际用来处理用户数据`
 
+##执行更新...
