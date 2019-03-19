@@ -1,0 +1,30 @@
+syntax = "proto3";
+
+package command;
+
+message Message {
+
+    /*
+    Type是通过protobuf对象的名字通过字符串Hash算法生成的数字
+    这样我们就不需要定义命令码了，而且效率也不会有影响
+    */
+    uint32 Type = 1;
+    string Name = 2;
+    // 包的序号
+    uint32 Index = 3;
+    // 实际的protobuf对象数据
+    bytes Data = 4;
+};
+
+/*
+心跳包，服务器主动发送检查存活
+当客户端收到此包时，需回复Pong
+*/
+message PingMsg {
+
+}
+
+message PongMsg {
+
+}
+
