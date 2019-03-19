@@ -1,0 +1,10 @@
+{
+	"global": {
+		"super_ip": "127.0.0.1",
+		"super_port": 8000
+	}
+
+	, "superserver": {
+		"port": 8000	
+	}
+}
