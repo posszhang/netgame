@@ -214,18 +214,16 @@ func (this *TCPTask) doCmd(buf []byte) {
 
 func (this *TCPTask) SendCmd(cmd proto.Message) (ret bool) {
 
-	name := proto.MessageName(cmd)
-	data, _ := proto.Marshal(cmd)
-	return this.SendCmd_NoPack(uint32(util.BKDRHash(name)), name, 0, data)
+	msg := new(command.Message)
+	msg.Name = proto.MessageName(cmd)
+	msg.Type = uint32(util.BKDRHash(msg.Name))
+	msg.Index = 0
+	msg.Data, _ = proto.Marshal(cmd)
+
+	return this.SendCmd_NoPack(msg)
 }
 
-func (this *TCPTask) SendCmd_NoPack(typeid uint32, name string, index uint32, data []byte) bool {
-
-	msg := new(command.Message)
-	msg.Name = name
-	msg.Type = typeid
-	msg.Index = index
-	msg.Data = data
+func (this *TCPTask) SendCmd_NoPack(msg *command.Message) bool {
 
 	d := make([][]byte, 2)
 	d[1], _ = proto.Marshal(msg)

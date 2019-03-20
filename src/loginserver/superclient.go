@@ -46,6 +46,10 @@ func (client *SuperClient) init() {
 
 	client.msgHandler.Reg(&command.NotifyRouteServerInit{}, client.onNotifyRouteServerInit)
 	client.msgHandler.Reg(&command.NotifyRouteServerAdd{}, client.onNotifyRouteServerAdd)
+
+	client.msgHandler.Reg(&command.RetServerVerify{}, client.onRetServerVerify)
+	client.msgHandler.Reg(&command.RetGatewayList{}, client.onRetGatewayList)
+
 }
 
 func (client *SuperClient) onNotifyRouteServerInit(cmd proto.Message) {
@@ -57,4 +61,18 @@ func (client *SuperClient) onNotifyRouteServerInit(cmd proto.Message) {
 func (client *SuperClient) onNotifyRouteServerAdd(cmd proto.Message) {
 	msg := cmd.(*command.NotifyRouteServerAdd)
 	routeManager.Add(msg.Info)
+}
+
+func (client *SuperClient) onRetServerVerify(cmd proto.Message) {
+	log.Println("服务器校验完成，请求获取网关数据")
+
+	snd := new(command.ReqGatewayList)
+	client.SendCmd(snd)
+}
+
+func (client *SuperClient) onRetGatewayList(cmd proto.Message) {
+
+	msg := cmd.(*command.RetGatewayList)
+
+	log.Println(msg.Serverlist)
 }

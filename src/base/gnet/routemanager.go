@@ -2,6 +2,7 @@ package gnet
 
 import (
 	"command"
+	"github.com/golang/protobuf/proto"
 	"sync"
 )
 
@@ -61,4 +62,32 @@ func (mgr *RouteManager) Do() {
 	}
 
 	mgr.messageQueue.Do(mgr.Derived.MsgParse)
+}
+
+func (mgr *RouteManager) BroadcastByType(servertype uint32, msg proto.Message) {
+
+	route := mgr.GetRouteByType(servertype)
+	if route == nil {
+		return
+	}
+
+	snd := new(command.RouteBroadcastByType)
+	snd.Type = servertype
+	snd.Msg = PackMessage(msg)
+
+	route.SendCmd(snd)
+}
+
+func (mgr *RouteManager) GetRouteByType(servertype uint32) *RouteClient {
+
+	if len(mgr.routeList) == 0 {
+		return nil
+	}
+
+	mgr.mutex.Lock()
+	defer mgr.mutex.Unlock()
+
+	index := servertype % uint32(len(mgr.routeList))
+
+	return mgr.routeList[index]
 }

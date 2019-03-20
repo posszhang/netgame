@@ -1,5 +1,6 @@
 syntax = "proto3";
 
+import "message.proto";
 import "serverinfo.proto";
 
 package command;
@@ -8,6 +9,12 @@ package command;
 message ReqServerVerify {
 	ServerInfo Info = 1;	
 }
+
+// 返回服务器验证信息
+message RetServerVerify {
+
+}
+
 
 // 初始化路由服务器列表
 message NotifyRouteServerInit {
@@ -19,12 +26,25 @@ message NotifyRouteServerAdd {
 	ServerInfo Info = 1;
 }
 
+// 请求网关列表
+message ReqGatewayList {
+
+}
+
 //刷新网络服务器列表
-message NotifyGatewayList {
+message RetGatewayList {
 	repeated ServerInfo Serverlist = 1;
 }
 
 //刷新网关服务器在线
 message UpdateGatewayOnline {
-	map<uint32, uint32> Onlinemap = 1;
+	uint32 Id = 1;
+	uint32 Online = 2;	
 }
+
+//路由消息给指定类型服务器
+message RouteBroadcastByType{	
+	Message Msg = 1;
+	uint32 Type = 2;
+}
+

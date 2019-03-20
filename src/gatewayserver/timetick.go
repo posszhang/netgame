@@ -10,6 +10,7 @@ type TimeTick struct {
 
 func NewTimeTick() *TimeTick {
 	tick := &TimeTick{}
+	tick.Derived = tick
 	tick.Run()
 
 	return tick
@@ -17,4 +18,6 @@ func NewTimeTick() *TimeTick {
 
 func (tt *TimeTick) TimeAction() {
 	routeManager.Do()
+
+	gatewayTaskManager.TimeAction()
 }

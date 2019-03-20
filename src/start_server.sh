@@ -1,4 +1,4 @@
-SERVERLIST='routeserver superserver loginserver'
+SERVERLIST='routeserver superserver loginserver gatewayserver'
 
 # 服务器关闭顺序
 SERVERLIST_REVERSE=
@@ -27,11 +27,19 @@ dowork()
 								sleep 1
 						done
 					
+						for ((i=0;i<2;++i))
+						do
+								nohup $PWD/gatewayserver/gatewayserver -logfile=$HOME/log/gatewayserver$i.log -port=802$i &
+								sleep 1
+						done
+
+
 						for ((i=0;i<1;++i))
 						do
 								nohup $PWD/loginserver/loginserver -logfile=$HOME/log/loginserver$i.log -port=801$i &
 								sleep 1
 						done
+
 
 
 						;;

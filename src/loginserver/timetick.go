@@ -10,6 +10,7 @@ type TimeTick struct {
 
 func NewTimeTick() *TimeTick {
 	tick := &TimeTick{}
+	tick.Derived = tick
 	tick.Run()
 
 	return tick

@@ -4,6 +4,7 @@ import (
 	"base/gnet"
 	"base/log"
 	"command"
+	"github.com/golang/protobuf/proto"
 )
 
 type RouteManager struct {
@@ -27,7 +28,7 @@ func (mgr *RouteManager) GetServerInfo() *command.ServerInfo {
 
 func (mgr *RouteManager) MsgParse(msg *command.Message) bool {
 
-	log.Println("route manager:", msg)
+	//	log.Println("route manager:", msg)
 
 	mgr.msgHandler.Process(msg)
 
@@ -36,4 +37,13 @@ func (mgr *RouteManager) MsgParse(msg *command.Message) bool {
 
 func (mgr *RouteManager) init() {
 
+	mgr.msgHandler.Reg(&command.UpdateGatewayOnline{}, mgr.onUpdateGatewayOnline)
+}
+
+func (mgr *RouteManager) onUpdateGatewayOnline(cmd proto.Message) {
+	msg := cmd.(*command.UpdateGatewayOnline)
+
+	gatewayManager.Update(msg.Id, msg.Online)
+
+	log.Println("更新网关在线", msg.Id, msg.Online)
 }

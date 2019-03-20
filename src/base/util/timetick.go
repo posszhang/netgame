@@ -20,9 +20,9 @@ func NewTimer(ms uint32) *Timer {
 	return t
 }
 
-func (this *Timer) Tick(a time.Duration) bool {
+func (this *Timer) Check() bool {
 
-	n := int64(a)
+	n := time.Now().UnixNano()
 
 	if n < this.now {
 		return false

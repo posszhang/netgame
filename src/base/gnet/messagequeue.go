@@ -1,7 +1,7 @@
 package gnet
 
 import (
-	"base/log"
+	//	"base/log"
 	"command"
 	"fmt"
 	"sync"
@@ -24,8 +24,6 @@ func (this *MessageQueue) Final() {
 }
 
 func (this *MessageQueue) Cache(msg *command.Message) {
-
-	log.Println("message queue cache", msg)
 
 	this.mutex.Lock()
 	defer this.mutex.Unlock()
@@ -57,7 +55,7 @@ func (this *MessageQueue) Do(fun func(*command.Message) bool) {
 				return
 			}
 
-			log.Println("message queue do", msg)
+			//	log.Println("message queue do", msg)
 			i++
 			fun(msg)
 			continue

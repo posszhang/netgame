@@ -10,12 +10,16 @@ import (
 type ServerTask struct {
 	gnet.TCPTask
 
+	msgHandler gnet.MessageHandler
+
 	serverinfo command.ServerInfo
 }
 
 func NewServerTask() *ServerTask {
 	task := &ServerTask{}
 	task.Derived = task
+
+	task.init()
 
 	return task
 }
@@ -49,7 +53,16 @@ func (task *ServerTask) RecycleConn() bool {
 	return true
 }
 
+func (task *ServerTask) init() {
+
+	task.msgHandler.Reg(&command.RouteBroadcastByType{}, task.onRouteBroadcastByType)
+}
+
 func (task *ServerTask) MsgParse(msg *command.Message) bool {
+
+	//task.msgHandler.Reg(&command.RouteBroadcastById, task.onRouteBoradcastByType)
+	task.msgHandler.Process(msg)
+
 	return true
 }
 
@@ -63,4 +76,19 @@ func (task *ServerTask) GetID() uint32 {
 
 func (task *ServerTask) GetServerType() uint32 {
 	return task.serverinfo.Type
+}
+
+func (task *ServerTask) onRouteBroadcastByType(cmd proto.Message) {
+
+	msg := cmd.(*command.RouteBroadcastByType)
+
+	serverlist := serverManager.GetByType(msg.Type)
+	if len(serverlist) == 0 {
+		log.Println("boradcast by type error, servers is null", msg.Msg.Name)
+		return
+	}
+
+	for _, server := range serverlist {
+		server.SendCmd_NoPack(msg.Msg)
+	}
 }

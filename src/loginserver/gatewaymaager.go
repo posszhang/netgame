@@ -3,6 +3,7 @@ package main
 import (
 	"base/log"
 	"command"
+	"sync"
 )
 
 // 网关结点信息
@@ -13,6 +14,8 @@ type GatewayNode struct {
 
 type GatewayManager struct {
 	gylist map[uint32]*GatewayNode
+
+	mutex sync.Mutex
 }
 
 func NewGatewayManager() *GatewayManager {
@@ -44,14 +47,14 @@ func (mgr *GatewayManager) ResetGateWayList(serverList []*command.ServerInfo) {
 	log.Println("reset gylist ", mgr.gylist)
 }
 
-func (mgr *GatewayManager) UpdateGatewayOnline(onlineMap map[uint32]uint32) {
+func (mgr *GatewayManager) Update(id uint32, online uint32) {
 
-	for id, online := range onlineMap {
+	mgr.mutex.Lock()
+	defer mgr.mutex.Unlock()
 
-		if _, ok := mgr.gylist[id]; !ok {
-			continue
-		}
-
-		mgr.gylist[id].Online = online
+	if _, ok := mgr.gylist[id]; !ok {
+		return
 	}
+
+	mgr.gylist[id].Online = online
 }

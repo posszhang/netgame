@@ -98,7 +98,7 @@ func (mgr *ServerManager) NotifyRouteServerInit(task *ServerTask) {
 
 	for _, server := range serverlist {
 		info := server.GetServerInfo()
-		msg.Serverlist = append(msg.Serverlist, &info)
+		msg.Serverlist = append(msg.Serverlist, info)
 	}
 
 	task.SendCmd(msg)
@@ -110,22 +110,7 @@ func (mgr *ServerManager) NotifyRouteServerAdd(task *ServerTask) {
 	msg := new(command.NotifyRouteServerAdd)
 	info := task.GetServerInfo()
 
-	msg.Info = &info
+	msg.Info = info
 
 	mgr.SendCmdToAllExceptionType(msg, command.RouteServer)
-}
-
-//刷新网关服务器列表到登陆服务器
-func (mgr *ServerManager) NotifyGate2Login(task *ServerTask) {
-	msg := new(command.NotifyGatewayList)
-
-	serverlist := mgr.GetByType(command.GatewayServer)
-	msg.Serverlist = make([]*command.ServerInfo, 0, len(serverlist))
-
-	for _, server := range serverlist {
-		info := server.GetServerInfo()
-		msg.Serverlist = append(msg.Serverlist, &info)
-	}
-
-	task.SendCmd(msg)
 }

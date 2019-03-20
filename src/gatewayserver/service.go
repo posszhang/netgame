@@ -10,6 +10,7 @@ import (
 var timetick *TimeTick
 var superclient *SuperClient
 var routeManager *RouteManager
+var gatewayTaskManager *GatewayTaskManager
 
 type Service struct {
 	gnet.NetService
@@ -40,6 +41,7 @@ func (server *Service) Init() bool {
 	}
 
 	routeManager = NewRouteManager()
+	gatewayTaskManager = NewGatewayTaskManager()
 	timetick = NewTimeTick()
 
 	return true

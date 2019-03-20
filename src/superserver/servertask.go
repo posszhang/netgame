@@ -10,11 +10,15 @@ import (
 type ServerTask struct {
 	gnet.TCPTask
 	serverinfo command.ServerInfo
+
+	msgHandler gnet.MessageHandler
 }
 
 func NewServerTask() *ServerTask {
 	task := &ServerTask{}
 	task.Derived = task
+
+	task.init()
 
 	return task
 }
@@ -40,6 +44,10 @@ func (task *ServerTask) VerifyConn(msg *command.Message) bool {
 
 	//服务器新增时，回调处理特殊逻辑
 	task.onServerAddCallback()
+
+	snd := new(command.RetServerVerify)
+	task.SendCmd(snd)
+
 	return true
 }
 
@@ -54,12 +62,6 @@ func (task *ServerTask) onServerAddCallback() {
 		//是路由服务器代表主动新增
 		serverManager.NotifyRouteServerAdd(task)
 	}
-
-	//登陆服务器新增，主动刷新网关
-	if srvtp == command.GatewayServer {
-		serverManager.NotifyGate2Login(task)
-	}
-
 }
 
 func (task *ServerTask) RecycleConn() bool {
@@ -80,14 +82,36 @@ func (task *ServerTask) GetID() uint32 {
 	return task.serverinfo.Id
 }
 
-func (task *ServerTask) GetServerInfo() command.ServerInfo {
-	return task.serverinfo
+func (task *ServerTask) GetServerInfo() *command.ServerInfo {
+	return &task.serverinfo
 }
 
 func (task *ServerTask) GetServerType() uint32 {
 	return task.serverinfo.Type
 }
 
+func (task *ServerTask) init() {
+	task.msgHandler.Reg(&command.ReqGatewayList{}, task.onReqGatewayList)
+}
+
 func (task *ServerTask) MsgParse(msg *command.Message) bool {
+
+	log.Println(msg)
+
+	task.msgHandler.Process(msg)
+
 	return true
+}
+
+func (task *ServerTask) onReqGatewayList(cmd proto.Message) {
+
+	snd := new(command.RetGatewayList)
+
+	serverlist := serverManager.GetByType(command.GatewayServer)
+	snd.Serverlist = make([]*command.ServerInfo, 0, len(serverlist))
+
+	for _, server := range serverlist {
+		snd.Serverlist = append(snd.Serverlist, server.GetServerInfo())
+	}
+	task.SendCmd(snd)
 }
