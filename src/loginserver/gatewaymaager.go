@@ -58,3 +58,26 @@ func (mgr *GatewayManager) Update(id uint32, online uint32) {
 
 	mgr.gylist[id].Online = online
 }
+
+func (mgr *GatewayManager) GetOne() *GatewayNode {
+
+	mgr.mutex.Lock()
+	defer mgr.mutex.Unlock()
+
+	var node *GatewayNode
+	for _, item := range mgr.gylist {
+
+		if node == nil {
+			node = item
+			continue
+		}
+
+		if item.Online > node.Online {
+			continue
+		}
+
+		node = item
+	}
+
+	return node
+}

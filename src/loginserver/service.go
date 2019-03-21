@@ -42,7 +42,6 @@ func (server *Service) Init() bool {
 
 	routeManager = NewRouteManager()
 	gatewayManager = NewGatewayManager()
-
 	timetick = NewTimeTick()
 
 	return true

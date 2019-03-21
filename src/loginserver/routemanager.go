@@ -15,7 +15,6 @@ type RouteManager struct {
 
 func NewRouteManager() *RouteManager {
 	mgr := &RouteManager{}
-	mgr.Derived = mgr
 
 	mgr.init()
 
@@ -36,6 +35,8 @@ func (mgr *RouteManager) MsgParse(msg *command.Message) bool {
 }
 
 func (mgr *RouteManager) init() {
+
+	mgr.Derived = mgr
 
 	mgr.msgHandler.Reg(&command.UpdateGatewayOnline{}, mgr.onUpdateGatewayOnline)
 }
