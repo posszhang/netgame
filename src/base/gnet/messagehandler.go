@@ -6,6 +6,7 @@ import (
 	"command"
 	"github.com/golang/protobuf/proto"
 	"reflect"
+	"sync"
 )
 
 type MsgFunc func(proto.Message)
@@ -16,17 +17,12 @@ type MessageHandlerInfo struct {
 }
 
 type MessageHandler struct {
-	msgFunc map[uint32]MsgFunc
-	typeMap map[uint32]proto.Message
-
 	msgMap map[uint32]*MessageHandlerInfo
+
+	mutex sync.Mutex
 }
 
 func (this *MessageHandler) Reg(msg proto.Message, fun MsgFunc) bool {
-
-	if this.msgMap == nil {
-		this.msgMap = make(map[uint32]*MessageHandlerInfo)
-	}
 
 	name := proto.MessageName(msg)
 	id := util.BKDRHash(name)
@@ -34,6 +30,13 @@ func (this *MessageHandler) Reg(msg proto.Message, fun MsgFunc) bool {
 	info := new(MessageHandlerInfo)
 	info.msgType = reflect.TypeOf(msg)
 	info.msgHandler = fun
+
+	this.mutex.Lock()
+	defer this.mutex.Unlock()
+
+	if this.msgMap == nil {
+		this.msgMap = make(map[uint32]*MessageHandlerInfo)
+	}
 
 	this.msgMap[id] = info
 	return true
@@ -54,6 +57,8 @@ func (this *MessageHandler) HaveMsgFunc(typeid uint32, name string) bool {
 
 func (this *MessageHandler) Process(msg *command.Message) bool {
 
+	this.mutex.Lock()
+
 	log.Println("消息映射(", msg.Type, msg.Name, msg.Data, ")")
 	info, ok := this.msgMap[msg.Type]
 	if !ok {
@@ -69,6 +74,7 @@ func (this *MessageHandler) Process(msg *command.Message) bool {
 
 	info = this.msgMap[msg.Type]
 	cmd := reflect.New(info.msgType.Elem()).Interface()
+	this.mutex.Unlock()
 
 	if err := proto.Unmarshal(msg.Data, cmd.(proto.Message)); err != nil {
 		log.Errorln("消息解析错误(", msg.Type, msg.Name, msg.Data, ")")

@@ -224,21 +224,22 @@ func (this *TCPClient) SendCmd_NoBuf(buf []byte) (ret bool) {
 }
 
 func (this *TCPClient) SendCmd(cmd proto.Message) (ret bool) {
-	name := proto.MessageName(cmd)
-	data, _ := proto.Marshal(cmd)
-	return this.SendCmd_NoPack(uint32(util.BKDRHash(name)), name, 0, data)
+
+	msg := new(command.Message)
+	msg.Name = proto.MessageName(cmd)
+	msg.Type = uint32(util.BKDRHash(msg.Name))
+	msg.Index = 0
+	msg.Data, _ = proto.Marshal(cmd)
+
+	return this.SendCmd_NoPack(msg)
+
 }
 
-func (this *TCPClient) SendCmd_NoPack(typeid uint32, name string, index uint32, data []byte) bool {
+func (this *TCPClient) SendCmd_NoPack(msg *command.Message) bool {
 
 	if this.IsTerminate() {
 		return false
 	}
-
-	msg := new(command.Message)
-	msg.Name = name
-	msg.Type = typeid
-	msg.Data = data
 
 	d := make([][]byte, 2)
 	d[1], _ = proto.Marshal(msg)
