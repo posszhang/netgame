@@ -1,12 +1,18 @@
 # 网络游戏服务器脚手架 netgame
-## 多进程分布式游戏服务器框架
+多进程分布式游戏服务器框架
 
-使用本项目务必正确设置GOPATH
+## 开始
+
+
 ```bash
-export GOPATH=/home/posszhang/gamenet
+
+git clone https://github.com/posszhang/netgame.git
+
+cd netgame
+
+./env.sh
 ```
 
-<br/>
 
 然后执行`env.sh`脚本，里面包含项目中依赖库和各种其他相关的设置
 ```Bash
