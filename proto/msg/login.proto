@@ -1,0 +1,35 @@
+syntax = "proto3";
+
+package command;
+
+message ReqUserVerify {
+
+}
+
+message RetUserVerify {
+
+}
+
+//请求用户登陆
+//loginstr = account=xxxx&password=xxxxx&zone=1
+message ReqUserLogin {
+	string Loginstr = 1;
+}
+
+// 返回用户登陆
+message RetUserLogin {
+	uint32 Retcode = 1;
+	string Ip = 2;
+	uint32 Port = 3;
+	string Session = 4;	
+}
+
+// 请求登陆网关
+message ReqGatewayLogin {
+	string Session = 1;
+}
+
+// 返回是否登陆成功
+message RetGatewayLogin {
+	uint32 Retcode = 1;
+}
