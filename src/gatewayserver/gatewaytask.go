@@ -26,17 +26,24 @@ func (task *GatewayTask) init() {
 
 func (task *GatewayTask) VerifyConn(cmd *command.Message) bool {
 
-	msg := new(command.ReqLoginGateway)
+	log.Println("verify")
+
+	msg := new(command.ReqGatewayLogin)
 	if err := proto.Unmarshal(cmd.Data, msg); err != nil {
 		log.Println("[登陆]用户连接网关验证失败，消息解析错误")
 		return false
 	}
 
+	log.Println("verify1")
+
 	task.account = msg.Session
 
 	if !gatewayTaskManager.UniqueAdd(task) {
 		log.Println("[登陆]用户唯一性验证失败", task.account)
+		return false
 	}
+
+	log.Println("verify2")
 
 	log.Println("[登陆]", task.account, "连接网关验证成功")
 	return true

@@ -18,7 +18,9 @@ type GatewayTaskManager struct {
 }
 
 func NewGatewayTaskManager() *GatewayTaskManager {
-	mgr := &GatewayTaskManager{}
+	mgr := &GatewayTaskManager{
+		taskMap: make(map[string]*GatewayTask),
+	}
 
 	mgr.init()
 

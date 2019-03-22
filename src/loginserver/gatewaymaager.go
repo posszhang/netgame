@@ -26,7 +26,7 @@ func NewGatewayManager() *GatewayManager {
 	return mgr
 }
 
-func (mgr *GatewayManager) ResetGateWayList(serverList []*command.ServerInfo) {
+func (mgr *GatewayManager) Reset(serverList []*command.ServerInfo) {
 
 	nodeList := make(map[uint32]*GatewayNode)
 

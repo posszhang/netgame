@@ -75,4 +75,6 @@ func (client *SuperClient) onRetGatewayList(cmd proto.Message) {
 	msg := cmd.(*command.RetGatewayList)
 
 	log.Println(msg.Serverlist)
+
+	gatewayManager.Reset(msg.Serverlist)
 }

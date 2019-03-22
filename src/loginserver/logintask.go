@@ -7,6 +7,8 @@ import (
 	"github.com/golang/protobuf/proto"
 )
 
+var tempid uint32 = 1
+
 type LoginTask struct {
 	gnet.TCPTask
 
@@ -27,10 +29,26 @@ func (task *LoginTask) init() {
 }
 
 func (task *LoginTask) VerifyConn(msg *command.Message) bool {
+
+	cmd := new(command.ReqUserVerify)
+	if err := proto.Unmarshal(msg.Data, cmd); err != nil {
+		log.Println("[登陆]用户校验失败")
+		return false
+	}
+
+	loginTaskManager.UniqueAdd(task)
+
+	snd := new(command.RetUserVerify)
+	task.SendCmd(snd)
+
+	log.Println("[登陆]用户登录验证")
 	return true
 }
 
 func (task *LoginTask) RecycleConn() bool {
+
+	loginTaskManager.UniqueRemove(task)
+
 	return true
 }
 
@@ -51,10 +69,17 @@ func (task *LoginTask) onReqUserLogin(cmd proto.Message) {
 		log.Println("[登陆]没有可分配的网关节点")
 	}
 
+	log.Println("[登陆]分配网关", gateway.Info.Ip, ":", gateway.Info.Port)
 	snd := new(command.RetUserLogin)
 	snd.Ip = gateway.Info.Ip
 	snd.Port = gateway.Info.Port
 	snd.Session = msg.Loginstr
 
 	task.SendCmd(snd)
+}
+
+func (task *LoginTask) GetTempID() uint32 {
+	tempid++
+
+	return tempid
 }
