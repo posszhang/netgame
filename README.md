@@ -3,21 +3,22 @@
 
 ## 开始
 
-
+1.获取项目
 ```bash
-#1
 git clone https://github.com/posszhang/netgame.git
-#2
+```
+2.进入目录
+```bash
 cd netgame
-#3
+```
+3.执行`env.sh`脚本，将会自动获取依赖库，以及设置GOPATH
+```bash
 ./env.sh
 ```
-
-执行`env.sh`脚本，将会自动获取依赖库，以及设置GOPATH
-
-<br/>
-
-进入src目录执行`make`即可编译，当然你也可以根据自己的实际情况修改Makefile文件
+4.进入src目录执行`make`即可编译，当然你也可以根据自己的实际情况修改Makefile文件
+```bash
+make
+```
 
 <br/>
 
