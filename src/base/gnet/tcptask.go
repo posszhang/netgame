@@ -225,6 +225,18 @@ func (this *TCPTask) SendCmd(cmd proto.Message) (ret bool) {
 
 func (this *TCPTask) SendCmd_NoPack(msg *command.Message) bool {
 
+	if this.IsTerminate() {
+		return false
+	}
+
+	//如果是服务器内部连接，则允许等待，反之则释放
+	if len(this.sndQueue) == cap(this.sndQueue) {
+		log.Println("tcptask send cmd close conn: channel full")
+		log.Println(debug.Stack())
+		this.Terminate()
+		return false
+	}
+
 	d := make([][]byte, 2)
 	d[1], _ = proto.Marshal(msg)
 	d[0] = util.Int2Byte(len(d[1]))
@@ -232,20 +244,8 @@ func (this *TCPTask) SendCmd_NoPack(msg *command.Message) bool {
 	f := []byte("")
 	g := bytes.Join(d, f)
 
-	this.mutex.Lock()
-
-	if !this.terminate {
-
-		//如果是服务器内部连接，则允许等待，反之则释放
-		if len(this.sndQueue) == cap(this.sndQueue) {
-			log.Println("close conn: channel full")
-		}
-
-		//发送缓存
-		this.sndQueue <- g
-	}
-
-	this.mutex.Unlock()
+	//发送缓存
+	this.sndQueue <- g
 
 	return true
 	//return this.sendCmd_NoBuf(g)
@@ -289,4 +289,8 @@ func (this *TCPTask) ping() {
 
 func (this *TCPTask) GetConn() net.Conn {
 	return this.conn
+}
+
+func (this *TCPTask) GetIp() string {
+	return fmt.Sprint(this.conn.RemoteAddr())
 }

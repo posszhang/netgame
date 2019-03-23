@@ -1,7 +1,6 @@
 package gnet
 
 import (
-	"base/log"
 	"command"
 	"fmt"
 	"sync"
@@ -10,7 +9,8 @@ import (
 type MessageQueue struct {
 	chMsg chan *command.Message
 
-	mutex sync.Mutex
+	closed bool
+	mutex  sync.Mutex
 }
 
 func (this *MessageQueue) Final() {
@@ -21,12 +21,18 @@ func (this *MessageQueue) Final() {
 	if this.chMsg != nil {
 		close(this.chMsg)
 	}
+
+	this.closed = true
 }
 
 func (this *MessageQueue) Cache(msg *command.Message) {
 
 	this.mutex.Lock()
 	defer this.mutex.Unlock()
+
+	if this.closed {
+		return
+	}
 
 	if this.chMsg == nil {
 		this.chMsg = make(chan *command.Message, 10240)

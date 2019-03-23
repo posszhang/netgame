@@ -53,8 +53,6 @@ func (server *Service) Final() {
 
 func (server *Service) NewTCPTask(conn net.Conn, port int) {
 
-	log.Println("new tcp task conn", port)
-
 	task := NewGatewayTask()
 	task.GoHandler(conn)
 }

@@ -88,6 +88,12 @@ func (this *NetService) Run() {
 	signal.Notify(ch, syscall.SIGINT, syscall.SIGQUIT, syscall.SIGABRT, syscall.SIGTERM, syscall.SIGPIPE, syscall.SIGHUP)
 	go func() {
 		for sig := range ch {
+
+			//忽略，对应关闭的conn多次write
+			if sig == syscall.SIGPIPE {
+				continue
+			}
+
 			this.Terminate()
 			log.Println("[服务] 收到信号 ", sig)
 			break

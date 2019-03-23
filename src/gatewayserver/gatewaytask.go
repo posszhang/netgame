@@ -11,6 +11,8 @@ type GatewayTask struct {
 	gnet.TCPTask
 
 	account string
+
+	msgHandler gnet.MessageHandler
 }
 
 func NewGatewayTask() *GatewayTask {
@@ -22,19 +24,17 @@ func NewGatewayTask() *GatewayTask {
 
 func (task *GatewayTask) init() {
 	task.Derived = task
+
+	task.msgHandler.Reg(&command.TestBroadcastAll{}, task.onTestBroadcastAll)
 }
 
 func (task *GatewayTask) VerifyConn(cmd *command.Message) bool {
-
-	log.Println("verify")
 
 	msg := new(command.ReqGatewayLogin)
 	if err := proto.Unmarshal(cmd.Data, msg); err != nil {
 		log.Println("[登陆]用户连接网关验证失败，消息解析错误")
 		return false
 	}
-
-	log.Println("verify1")
 
 	task.account = msg.Session
 
@@ -43,23 +43,34 @@ func (task *GatewayTask) VerifyConn(cmd *command.Message) bool {
 		return false
 	}
 
-	log.Println("verify2")
-
 	log.Println("[登陆]", task.account, "连接网关验证成功")
+
+	snd := new(command.RetGatewayLogin)
+	snd.Retcode = 0
+	task.SendCmd(snd)
+
 	return true
 }
 
 func (task *GatewayTask) RecycleConn() bool {
 
+	log.Println("[登陆]", task.account, "与服务器断开连接")
 	gatewayTaskManager.UniqueRemove(task)
 
 	return true
 }
 
 func (task *GatewayTask) MsgParse(msg *command.Message) bool {
+
+	task.msgHandler.Process(msg)
+
 	return true
 }
 
 func (task *GatewayTask) GetAccount() string {
 	return task.account
+}
+
+func (task *GatewayTask) onTestBroadcastAll(cmd proto.Message) {
+	gatewayTaskManager.BroadcastAll(cmd)
 }

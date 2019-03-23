@@ -33,3 +33,8 @@ message ReqGatewayLogin {
 message RetGatewayLogin {
 	uint32 Retcode = 1;
 }
+
+// 测试广播压力
+message TestBroadcastAll {
+	string Str = 1;	
+}

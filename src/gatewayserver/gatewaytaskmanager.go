@@ -4,6 +4,7 @@ import (
 	"base/log"
 	"base/util"
 	"command"
+	"github.com/golang/protobuf/proto"
 	"sync"
 )
 
@@ -14,7 +15,7 @@ type GatewayTaskManager struct {
 	taskMap map[string]*GatewayTask
 
 	//timer
-	_10_sec *util.Timer
+	_1_sec *util.Timer
 }
 
 func NewGatewayTaskManager() *GatewayTaskManager {
@@ -29,7 +30,7 @@ func NewGatewayTaskManager() *GatewayTaskManager {
 
 func (mgr *GatewayTaskManager) init() {
 
-	mgr._10_sec = util.NewTimer(10000)
+	mgr._1_sec = util.NewTimer(1000)
 }
 
 func (mgr *GatewayTaskManager) UniqueAdd(task *GatewayTask) bool {
@@ -67,7 +68,7 @@ func (mgr *GatewayTaskManager) Count() uint32 {
 
 func (mgr *GatewayTaskManager) TimeAction() {
 
-	if mgr._10_sec.Check() {
+	if mgr._1_sec.Check() {
 
 		snd := new(command.UpdateGatewayOnline)
 		snd.Id = uint32(service.GetServerID())
@@ -75,5 +76,15 @@ func (mgr *GatewayTaskManager) TimeAction() {
 
 		//广播所有的登陆服务器
 		routeManager.BroadcastByType(command.LoginServer, snd)
+	}
+}
+
+func (mgr *GatewayTaskManager) BroadcastAll(cmd proto.Message) {
+
+	mgr.mutex.Lock()
+	defer mgr.mutex.Unlock()
+
+	for _, task := range mgr.taskMap {
+		task.SendCmd(cmd)
 	}
 }

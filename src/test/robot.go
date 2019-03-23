@@ -6,6 +6,7 @@ import (
 	"command"
 	"fmt"
 	"github.com/golang/protobuf/proto"
+	"time"
 )
 
 const (
@@ -26,6 +27,9 @@ type Robot struct {
 
 	msgHandler gnet.MessageHandler
 	msgQueue   gnet.MessageQueue
+
+	chClosed chan bool
+	inittm   int64
 }
 
 func NewRobot(ip string, port int, account string, password string) *Robot {
@@ -34,6 +38,8 @@ func NewRobot(ip string, port int, account string, password string) *Robot {
 		loginport: port,
 		account:   account,
 		password:  password,
+		chClosed:  make(chan bool, 1),
+		inittm:    time.Now().Unix(),
 	}
 
 	robot.init()
@@ -48,6 +54,8 @@ func (robot *Robot) init() {
 	robot.msgHandler.Reg(&command.RetUserVerify{}, robot.onRetUserVerify)
 	robot.msgHandler.Reg(&command.RetUserLogin{}, robot.onRetUserLogin)
 	robot.msgHandler.Reg(&command.RetGatewayLogin{}, robot.onRetGatewayLogin)
+	robot.msgHandler.Reg(&command.TestBroadcastAll{}, robot.onTestBroadcastAll)
+
 }
 
 func (robot *Robot) Run() {
@@ -83,7 +91,6 @@ func (robot *Robot) OnConnected() {
 
 func (robot *Robot) MsgParse(msg *command.Message) bool {
 
-	log.Println(msg.Name)
 	robot.msgQueue.Cache(msg)
 
 	return true
@@ -125,4 +132,47 @@ func (robot *Robot) onRetUserLogin(cmd proto.Message) {
 
 func (robot *Robot) onRetGatewayLogin(cmd proto.Message) {
 
+	log.Println("网关验证成功")
+
+	go func() {
+
+		for {
+			snd := new(command.TestBroadcastAll)
+			snd.Str = "1111111111111111111111111111111111111111111111111111111111111111111111111111111111"
+			robot.SendCmd(snd)
+
+			time.Sleep(100 * time.Millisecond)
+
+			flag := false
+			select {
+			case flag = <-robot.chClosed:
+				log.Println("机器人准备退出")
+				break
+			default:
+				break
+			}
+
+			if flag {
+				break
+			}
+		}
+
+	}()
+}
+
+func (robot *Robot) Close() {
+	robot.chClosed <- true
+	robot.Terminate()
+	robot.Join()
+	robot.msgQueue.Final()
+}
+
+func (robot *Robot) GetInitSec() uint32 {
+	return uint32(time.Now().Unix() - robot.inittm)
+}
+
+func (robot *Robot) onTestBroadcastAll(cmd proto.Message) {
+	//msg := cmd.(*command.TestBroadcastAll)
+
+	//log.Println("recv:", msg.Str)
 }

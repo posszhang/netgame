@@ -59,7 +59,7 @@ func (this *MessageHandler) Process(msg *command.Message) bool {
 
 	this.mutex.Lock()
 
-	log.Println("消息映射(", msg.Type, msg.Name, msg.Data, ")")
+	//log.Println("消息映射(", msg.Type, msg.Name, ")")
 	info, ok := this.msgMap[msg.Type]
 	if !ok {
 		msg.Type = util.BKDRHash(msg.Name)
