@@ -48,3 +48,13 @@ message RouteBroadcastByType{
 	uint32 Type = 2;
 }
 
+//路由消息给指定ID服务器
+message RouteBroadcastByID {
+	Message Msg = 1;
+	uint32 Id = 2;
+}
+
+//
+message ReqGateRegUser {
+	string Account = 1;
+}

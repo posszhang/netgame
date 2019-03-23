@@ -3,6 +3,7 @@ package main
 import (
 	"base/gnet"
 	"base/log"
+	"base/util"
 	"command"
 	"github.com/golang/protobuf/proto"
 )
@@ -36,7 +37,14 @@ func (task *GatewayTask) VerifyConn(cmd *command.Message) bool {
 		return false
 	}
 
-	task.account = msg.Session
+	params := util.Params2Map(msg.Session)
+
+	task.account = params["account"]
+
+	if len(task.GetAccount()) == 0 {
+		log.Println("[登陆]帐号不能为空，session:", msg.Session)
+		return true
+	}
 
 	if !gatewayTaskManager.UniqueAdd(task) {
 		log.Println("[登陆]用户唯一性验证失败", task.account)
@@ -48,6 +56,8 @@ func (task *GatewayTask) VerifyConn(cmd *command.Message) bool {
 	snd := new(command.RetGatewayLogin)
 	snd.Retcode = 0
 	task.SendCmd(snd)
+
+	task.queryRecord()
 
 	return true
 }
@@ -69,6 +79,14 @@ func (task *GatewayTask) MsgParse(msg *command.Message) bool {
 
 func (task *GatewayTask) GetAccount() string {
 	return task.account
+}
+
+func (task *GatewayTask) queryRecord() {
+
+	msg := new(command.ReqGateRegUser)
+	msg.Account = task.GetAccount()
+
+	routeManager.Broadcast(command.RecordServer, 0, msg)
 }
 
 func (task *GatewayTask) onTestBroadcastAll(cmd proto.Message) {

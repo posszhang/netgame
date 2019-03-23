@@ -56,6 +56,7 @@ func (task *ServerTask) RecycleConn() bool {
 func (task *ServerTask) init() {
 
 	task.msgHandler.Reg(&command.RouteBroadcastByType{}, task.onRouteBroadcastByType)
+	task.msgHandler.Reg(&command.RouteBroadcastByID{}, task.onRouteBroadcastByID)
 }
 
 func (task *ServerTask) MsgParse(msg *command.Message) bool {
@@ -91,4 +92,17 @@ func (task *ServerTask) onRouteBroadcastByType(cmd proto.Message) {
 	for _, server := range serverlist {
 		server.SendCmd_NoPack(msg.Msg)
 	}
+}
+
+func (task *ServerTask) onRouteBroadcastByID(cmd proto.Message) {
+
+	msg := cmd.(*command.RouteBroadcastByID)
+
+	server := serverManager.GetByID(msg.Id)
+	if server == nil {
+		log.Println("boradcast by id error, servers is null", msg.Msg.Name)
+		return
+	}
+
+	server.SendCmd_NoPack(msg.Msg)
 }

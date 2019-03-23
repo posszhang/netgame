@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/binary"
 	"math/rand"
+	"strings"
 )
 
 //自行设置随机种子
@@ -40,4 +41,23 @@ func Byte2Int(data []byte) int {
 	binary.Read(buffer, binary.BigEndian, &value)
 
 	return int(value)
+}
+
+func Params2Map(params string) map[string]string {
+
+	svec := strings.Split(params, "&")
+
+	paramMap := make(map[string]string)
+
+	for i, _ := range svec {
+
+		s := strings.Split(svec[i], "=")
+		if len(s) < 2 {
+			continue
+		}
+
+		paramMap[s[0]] = s[1]
+	}
+
+	return paramMap
 }

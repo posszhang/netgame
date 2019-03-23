@@ -32,7 +32,7 @@ func (task *LoginTask) VerifyConn(msg *command.Message) bool {
 
 	cmd := new(command.ReqUserVerify)
 	if err := proto.Unmarshal(msg.Data, cmd); err != nil {
-		log.Println("[登陆]用户校验失败")
+		log.Println("[登陆]校验失败", task.GetIp())
 		return false
 	}
 
@@ -41,7 +41,7 @@ func (task *LoginTask) VerifyConn(msg *command.Message) bool {
 	snd := new(command.RetUserVerify)
 	task.SendCmd(snd)
 
-	log.Println("[登陆]用户登录验证")
+	log.Println("[登陆]登录校验", task.GetIp())
 	return true
 }
 

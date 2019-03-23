@@ -78,6 +78,20 @@ func (mgr *RouteManager) BroadcastByType(servertype uint32, msg proto.Message) {
 	route.SendCmd(snd)
 }
 
+func (mgr *RouteManager) Broadcast(servertype uint32, index uint32, msg proto.Message) {
+
+	route := mgr.GetRouteByType(servertype)
+	if route == nil {
+		return
+	}
+
+	snd := new(command.RouteBroadcastByID)
+	snd.Id = uint32(command.GetServerID(int(servertype), int(index)))
+	snd.Msg = PackMessage(msg)
+
+	route.SendCmd(snd)
+}
+
 func (mgr *RouteManager) GetRouteByType(servertype uint32) *RouteClient {
 
 	if len(mgr.routeList) == 0 {
