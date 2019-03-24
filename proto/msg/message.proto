@@ -28,3 +28,9 @@ message PongMsg {
 
 }
 
+// 路由消息
+message RouteMessage {
+	uint32 Srcid = 1;
+	uint32 Destid = 2;
+	Message Msg = 3;		
+}

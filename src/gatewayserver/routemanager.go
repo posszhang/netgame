@@ -36,4 +36,5 @@ func (mgr *RouteManager) MsgParse(msg *command.Message) bool {
 
 func (mgr *RouteManager) init() {
 
+	mgr.InitRouteManager()
 }

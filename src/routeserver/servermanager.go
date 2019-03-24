@@ -87,3 +87,12 @@ func (mgr *ServerManager) SendCmdToAllExceptionType(msg proto.Message, tp uint32
 		task.SendCmd(msg)
 	}
 }
+
+func (mgr *ServerManager) Print() {
+	mgr.mutex.Lock()
+	defer mgr.mutex.Unlock()
+
+	for _, task := range mgr.serverMap {
+		log.Println(task.GetServerInfo())
+	}
+}

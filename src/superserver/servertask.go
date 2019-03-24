@@ -36,11 +36,11 @@ func (task *ServerTask) VerifyConn(msg *command.Message) bool {
 
 	task.serverinfo = *cmd.Info
 
-	log.Println("verify conn", task.GetServerInfo())
-
 	if !serverManager.UniqueAdd(task) {
 		return false
 	}
+
+	log.Println("新增服务器", task.GetServerInfo())
 
 	//服务器新增时，回调处理特殊逻辑
 	task.onServerAddCallback()
@@ -65,6 +65,8 @@ func (task *ServerTask) onServerAddCallback() {
 }
 
 func (task *ServerTask) RecycleConn() bool {
+
+	log.Println("删除服务器", task.GetServerInfo())
 
 	serverManager.UniqueRemove(task)
 

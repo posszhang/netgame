@@ -2,6 +2,8 @@ syntax = "proto3";
 
 package command;
 
+import "record.proto";
+
 message ReqUserVerify {
 
 }
@@ -37,4 +39,9 @@ message RetGatewayLogin {
 // 测试广播压力
 message TestBroadcastAll {
 	string Str = 1;	
+}
+
+//通知角色数据
+message NotifyChardata{
+	repeated GateUserInfo Rolelist = 1;
 }

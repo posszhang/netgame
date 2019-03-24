@@ -37,16 +37,18 @@ func (task *ServerTask) VerifyConn(msg *command.Message) bool {
 
 	task.serverinfo = *cmd.Info
 
-	log.Println("verify conn", task.GetServerInfo())
-
 	if !serverManager.UniqueAdd(task) {
 		return false
 	}
+
+	log.Println("新增服务器", task.GetServerInfo())
 
 	return true
 }
 
 func (task *ServerTask) RecycleConn() bool {
+
+	log.Println("删除服务器", task.GetServerInfo())
 
 	serverManager.UniqueRemove(task)
 
@@ -83,14 +85,17 @@ func (task *ServerTask) onRouteBroadcastByType(cmd proto.Message) {
 
 	msg := cmd.(*command.RouteBroadcastByType)
 
+	log.Println(msg.Msg.Name)
+
 	serverlist := serverManager.GetByType(msg.Type)
 	if len(serverlist) == 0 {
-		log.Println("boradcast by type error, servers is null", msg.Msg.Name)
+		log.Println("boradcast by type error, servers is null", msg.Type)
+		serverManager.Print()
 		return
 	}
 
 	for _, server := range serverlist {
-		server.SendCmd_NoPack(msg.Msg)
+		server.SendCmd(cmd)
 	}
 }
 
@@ -98,11 +103,14 @@ func (task *ServerTask) onRouteBroadcastByID(cmd proto.Message) {
 
 	msg := cmd.(*command.RouteBroadcastByID)
 
+	log.Println(msg.Msg.Name)
+
 	server := serverManager.GetByID(msg.Id)
 	if server == nil {
-		log.Println("boradcast by id error, servers is null", msg.Msg.Name)
+		log.Println("boradcast by id error, servers is null", msg.Id)
+		serverManager.Print()
 		return
 	}
 
-	server.SendCmd_NoPack(msg.Msg)
+	server.SendCmd(cmd)
 }

@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package command;
+
+message GateUserInfo {
+	string Account = 1;
+	uint64 Userid = 2;
+	string Name = 3;
+
+}
+
+message DBUserInfo {
+
+	string Account = 1;
+	uint64 Userid = 2;
+	string Name = 3;
+}
+
+//
+message ReqGateRegUser {
+	string Account = 1;
+}
+
+message RetGateRegUser {
+	uint32 Retcode = 1;
+	repeated GateUserInfo Userlist = 2;
+}

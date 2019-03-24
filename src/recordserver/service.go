@@ -1,17 +1,18 @@
 package main
 
 import (
+	"base/db"
 	"base/gnet"
 	"base/log"
 	"command"
+	"gopkg.in/mgo.v2"
 	"net"
 )
 
 var timetick *TimeTick
 var superclient *SuperClient
 var routeManager *RouteManager
-var gatewayTaskManager *GatewayTaskManager
-var gateUserManager *GateUserManager
+var mongo *mgo.Session
 
 type Service struct {
 	gnet.NetService
@@ -27,13 +28,15 @@ func NewService() *Service {
 func (server *Service) Init() bool {
 
 	//初始化serverid
-	server.SetServerID(command.GetServerID(command.GatewayServer, config.GetInt("server_index")))
+	server.SetServerID(command.GetServerID(command.RecordServer, config.GetInt("server_index")))
 
-	ret := server.Bind("gatewayserver", "", config.GetInt("port"))
+	ret := server.Bind("recordserver", "", 0)
 	if !ret {
 		log.Println("bid port error,service run is error")
 		return false
 	}
+
+	routeManager = NewRouteManager()
 
 	superclient = NewSuperClient()
 	if superclient == nil {
@@ -41,9 +44,11 @@ func (server *Service) Init() bool {
 		return false
 	}
 
-	routeManager = NewRouteManager()
-	gatewayTaskManager = NewGatewayTaskManager()
-	gateUserManager = NewGateUserManager()
+	mongo = db.NewMongo(config.GetString("mongdb"))
+	if mongo == nil {
+		log.Println("init mongo db error")
+		return false
+	}
 
 	timetick = NewTimeTick()
 
@@ -52,11 +57,8 @@ func (server *Service) Init() bool {
 
 func (server *Service) Final() {
 
-	routeManager.Close()
 }
 
 func (server *Service) NewTCPTask(conn net.Conn, port int) {
 
-	task := NewGatewayTask()
-	task.GoHandler(conn)
 }

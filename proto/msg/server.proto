@@ -46,15 +46,13 @@ message UpdateGatewayOnline {
 message RouteBroadcastByType{	
 	Message Msg = 1;
 	uint32 Type = 2;
+	uint32 Srcid = 3;
 }
 
 //路由消息给指定ID服务器
 message RouteBroadcastByID {
 	Message Msg = 1;
 	uint32 Id = 2;
+	uint32 Srcid = 3;
 }
 
-//
-message ReqGateRegUser {
-	string Account = 1;
-}

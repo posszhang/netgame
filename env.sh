@@ -4,6 +4,7 @@ echo $GOPATH
 echo export GOPATH=$PROJECT_PATH >> ~/.bashrc
 source ~/.bashrc
 
+git clone https://github.com/go-mgo/mgo.git $GOPATH/src/github.com/go-mgo
 git clone https://github.com/golang/crypto.git $GOPATH/src/github.com/golang/crypto
 git clone https://github.com/golang/net.git $GOPATH/src/github.com/golang/net
 git clone https://github.com/golang/sys.git $GOPATH/src/github.com/golang/sys

@@ -12,6 +12,8 @@ var tempid uint32 = 1
 type LoginTask struct {
 	gnet.TCPTask
 
+	tempid uint32
+
 	msgHandler gnet.MessageHandler
 }
 
@@ -79,7 +81,11 @@ func (task *LoginTask) onReqUserLogin(cmd proto.Message) {
 }
 
 func (task *LoginTask) GetTempID() uint32 {
-	tempid++
 
-	return tempid
+	if task.tempid == 0 {
+		task.tempid = tempid
+		tempid++
+	}
+
+	return task.tempid
 }

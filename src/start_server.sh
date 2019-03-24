@@ -1,4 +1,4 @@
-SERVERLIST='routeserver superserver loginserver gatewayserver'
+SERVERLIST='recordserver routeserver superserver loginserver gatewayserver'
 
 # 服务器关闭顺序
 SERVERLIST_REVERSE=
@@ -26,7 +26,12 @@ dowork()
 								nohup $PWD/routeserver/routeserver -logfile=$HOME/log/routeserver$i.log &
 								sleep 1
 						done
-					
+				
+						for ((i=0;i<1;++i))
+						do
+							nohup $PWD/recordserver/recordserver -logfile=$HOME/log/recordserver$i.log -port=803$i &
+						done
+
 						for ((i=0;i<2;++i))
 						do
 								nohup $PWD/gatewayserver/gatewayserver -logfile=$HOME/log/gatewayserver$i.log -port=802$i &
@@ -59,7 +64,7 @@ stopwork()
 
 				#pkill -9 ${serv:0:10} -u `whoami`
 				ps aux|grep "/$serv"|sed -e '/grep/d'|awk '{print $2}'|xargs kill 2&>/dev/null
-				while test -f  RunServer.sh
+				while test -f  start_server.sh
 				do  #确保结束第一个进程后再结束第二个，方便MonitorServer监控
 						echo -n "."
 						COUNT=`ps x|grep -v "grep"|grep "$serv"| wc -l`

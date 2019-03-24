@@ -154,13 +154,14 @@ func (this *TCPTask) writer() {
 		}
 	}
 
-	time.Sleep(100 * time.Millisecond)
+	//time.Sleep(100 * time.Millisecond)
+
 	this.mutex.Lock()
 	defer this.mutex.Unlock()
 	this.conn.(*net.TCPConn).SetLinger(0)
 	this.conn.Close()
-	close(this.sndQueue)
 	this.terminate = true
+	close(this.sndQueue)
 
 }
 
@@ -189,8 +190,6 @@ func (this *TCPTask) doCmd(buf []byte) {
 	// 没有验证,则第一个包是验证包
 	if !this.isVerify() {
 		if this.Derived != nil && this.Derived.VerifyConn(msg) {
-
-			log.Println("tcptask验证成功")
 
 			this.mutex.Lock()
 			if this.verifyTimeout != nil {
@@ -244,11 +243,9 @@ func (this *TCPTask) SendCmd_NoPack(msg *command.Message) bool {
 	f := []byte("")
 	g := bytes.Join(d, f)
 
-	//发送缓存
 	this.sndQueue <- g
 
 	return true
-	//return this.sendCmd_NoBuf(g)
 }
 
 func (this *TCPTask) isVerify() bool {
