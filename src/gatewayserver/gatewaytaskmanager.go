@@ -70,6 +70,7 @@ func (mgr *GatewayTaskManager) TimeAction() {
 
 	if mgr._1_sec.Check() {
 
+		log.Println("当前网关在线:", mgr.Count())
 		snd := new(command.UpdateGatewayOnline)
 		snd.Id = uint32(service.GetServerID())
 		snd.Online = mgr.Count()

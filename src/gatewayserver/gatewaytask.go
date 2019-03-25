@@ -87,6 +87,8 @@ func (task *GatewayTask) queryRecord() {
 	msg.Account = task.GetAccount()
 
 	routeManager.Broadcast(command.RecordServer, 0, msg)
+
+	log.Println("[登陆]查询账号", task.GetAccount(), "数据")
 }
 
 func (task *GatewayTask) onTestBroadcastAll(cmd proto.Message) {

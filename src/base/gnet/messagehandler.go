@@ -67,7 +67,7 @@ func (this *MessageHandler) Process(msg *command.Message) bool {
 	}
 
 	if !ok {
-
+		this.mutex.Unlock()
 		log.Warnln("消息映射错误(", msg.Type, msg.Name, msg.Data, ")")
 		return false
 	}

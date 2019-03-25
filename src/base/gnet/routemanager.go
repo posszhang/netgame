@@ -28,11 +28,15 @@ type RouteManager struct {
 	srcid uint32
 
 	Derived IRouteManager
+
+	isinit bool
 }
 
-func (mgr *RouteManager) InitRouteManager() {
-	mgr.messageHandler.Reg(&command.RouteMessage{}, mgr.onRouteMessage)
+func (mgr *RouteManager) init() {
 
+	mgr.isinit = true
+
+	mgr.messageHandler.Reg(&command.RouteMessage{}, mgr.onRouteMessage)
 	mgr.messageHandler.Reg(&command.RouteBroadcastByType{}, mgr.onBroadcastByType)
 	mgr.messageHandler.Reg(&command.RouteBroadcastByID{}, mgr.onBroadcastByID)
 }
@@ -65,13 +69,18 @@ func (mgr *RouteManager) Add(info *command.ServerInfo) {
 
 func (mgr *RouteManager) MsgParse(msg *command.Message) bool {
 
-	mgr.messageQueue.Cache(msg)
+	log.Println("cache:", msg.Name)
 
+	mgr.messageQueue.Cache(msg)
 	return true
 }
 
 //上次必须tick该函数
 func (mgr *RouteManager) Do() {
+
+	if !mgr.isinit {
+		mgr.init()
+	}
 
 	if mgr.Derived == nil {
 		return
@@ -83,6 +92,7 @@ func (mgr *RouteManager) Do() {
 
 func (mgr *RouteManager) process(cmd *command.Message) bool {
 
+	log.Println("route process", cmd.Name)
 	if mgr.messageHandler.Process(cmd) {
 		return false
 	}
