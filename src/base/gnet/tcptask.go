@@ -98,6 +98,8 @@ func (this *TCPTask) reader() {
 			}
 
 			data := make([]byte, size)
+			this.conn.SetReadDeadline(time.Now().Add(timeout * time.Second))
+
 			if _, err = io.ReadFull(this.conn, data); err == nil {
 
 				this.doCmd(data)

@@ -68,6 +68,16 @@ func (mgr *RouteManager) onReqGateRegUser(cmd proto.Message) {
 	if count == 0 {
 
 		log.Println("初始化帐号", msg.Account)
+		c = session.DB("").C("uniqueid")
+
+		uid := uint64(10001)
+		count, err := c.Count()
+
+		if count != 0 {
+		} else {
+
+		}
+		log.Println(uid, count, err)
 
 	} else {
 
