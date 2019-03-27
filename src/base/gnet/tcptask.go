@@ -233,7 +233,7 @@ func (this *TCPTask) SendCmd_NoPack(msg *command.Message) bool {
 	//如果是服务器内部连接，则允许等待，反之则释放
 	if len(this.sndQueue) == cap(this.sndQueue) {
 		log.Println("tcptask send cmd close conn: channel full")
-		log.Println(debug.Stack())
+		log.Println(string(debug.Stack()))
 		this.Terminate()
 		return false
 	}

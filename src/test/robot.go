@@ -68,6 +68,7 @@ func (robot *Robot) Run() {
 		return
 	}
 
+	robot.inittm = time.Now().Unix()
 }
 
 func (robot *Robot) OnConnected() {

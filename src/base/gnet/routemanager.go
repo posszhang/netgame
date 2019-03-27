@@ -69,8 +69,6 @@ func (mgr *RouteManager) Add(info *command.ServerInfo) {
 
 func (mgr *RouteManager) MsgParse(msg *command.Message) bool {
 
-	log.Println("cache:", msg.Name)
-
 	mgr.messageQueue.Cache(msg)
 	return true
 }
@@ -92,7 +90,6 @@ func (mgr *RouteManager) Do() {
 
 func (mgr *RouteManager) process(cmd *command.Message) bool {
 
-	log.Println("route process", cmd.Name)
 	if mgr.messageHandler.Process(cmd) {
 		return false
 	}
