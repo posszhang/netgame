@@ -142,8 +142,14 @@ func (this *TCPTask) writer() {
 	for {
 
 		//如果关闭了，可以读不能写
-		buf := <-this.sndQueue
+		buf, ok := <-this.sndQueue
 
+		//channel被关闭
+		if !ok {
+			break
+		}
+
+		//主动投递nil
 		if buf == nil {
 			break
 		}
@@ -152,6 +158,7 @@ func (this *TCPTask) writer() {
 
 		_, err := this.conn.Write(buf)
 		if err != nil {
+			log.Println("tcptask 写buf失败", err)
 			break
 		}
 	}
@@ -163,8 +170,8 @@ func (this *TCPTask) writer() {
 	this.conn.(*net.TCPConn).SetLinger(0)
 	this.conn.Close()
 	this.terminate = true
-	close(this.sndQueue)
-
+	//自动GC
+	//close(this.sndQueue)
 }
 
 func (this *TCPTask) doCmd(buf []byte) {
@@ -231,10 +238,11 @@ func (this *TCPTask) SendCmd_NoPack(msg *command.Message) bool {
 	}
 
 	//如果是服务器内部连接，则允许等待，反之则释放
-	if len(this.sndQueue) == cap(this.sndQueue) {
+	if len(this.sndQueue)+1 >= cap(this.sndQueue) {
 		log.Println("tcptask send cmd close conn: channel full")
 		log.Println(string(debug.Stack()))
 		this.Terminate()
+		log.Println("is no lock")
 		return false
 	}
 
@@ -267,14 +275,19 @@ func (this *TCPTask) IsTerminate() bool {
 
 func (this *TCPTask) Terminate() {
 
+	log.Println("1")
 	this.mutex.Lock()
+
+	log.Println("2")
 	defer this.mutex.Unlock()
 	if this.terminate {
 		return
 	}
 
+	log.Println("3")
 	this.terminate = true
 	this.sndQueue <- nil
+	log.Println("4")
 }
 
 func (this *TCPTask) ping() {

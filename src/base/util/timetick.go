@@ -1,7 +1,7 @@
 package util
 
 import (
-	"fmt"
+	"base/log"
 	"runtime/debug"
 	"time"
 )
@@ -53,7 +53,7 @@ func (this *TimeTick) mainLoop() {
 
 	defer func() {
 		if err := recover(); err != nil {
-			fmt.Println("[异常] ", err, "\n", string(debug.Stack()))
+			log.Println("[异常] ", err, "\n", string(debug.Stack()))
 		}
 	}()
 
@@ -73,7 +73,7 @@ func (this *TimeTick) mainLoop() {
 		n2 := time.Now().UnixNano()
 		t = time.Duration(n2 - n1)
 		if t > 10*time.Millisecond {
-			fmt.Println("timetick:", (n2-n1)/int64(time.Millisecond))
+			log.Println("timetick:", (n2-n1)/int64(time.Millisecond))
 		}
 	}
 }
@@ -91,5 +91,5 @@ func NewMyFunctionTime(str string, t time.Duration) {
 		return
 	}
 
-	fmt.Println("耗时统计:", str, " ms:", s/1e6)
+	log.Println("耗时统计:", str, " ms:", s/1e6)
 }

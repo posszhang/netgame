@@ -63,6 +63,10 @@ func (mgr *GatewayTaskManager) Count() uint32 {
 
 	count := uint32(len(mgr.taskMap))
 
+	for account, _ := range mgr.taskMap {
+		log.Println(account)
+	}
+
 	return count
 }
 
