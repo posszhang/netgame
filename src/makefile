@@ -1,4 +1,4 @@
-DIRS=loginserver superserver routeserver test 
+DIRS=loginserver superserver routeserver gatewayserver recordserver test 
 
 all: .proto .debug
 
@@ -12,6 +12,7 @@ clean:
 	done
 
 	@rm -f command/*.pb.go
+	@rm -rf $(GOPATH)/pkg
 
 .debug:
 
@@ -25,9 +26,8 @@ clean:
 
 	@for dir in $(DIRS); \
 	do \
-		go install -race $$dir; \
+		go build -race -v -i -o $$dir/$$dir $$dir; \
 	done
-
 
 
 .proto:
