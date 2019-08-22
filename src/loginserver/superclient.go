@@ -39,6 +39,10 @@ func (client *SuperClient) OnConnected() {
 
 	msg := new(command.ReqServerVerify)
 	msg.Info = service.GetServerInfo()
+	msg.Carelist = make([]uint32, 0, 0)
+	msg.Carelist = append(msg.Carelist, command.RouteServer)
+	msg.Sign = config.GetString("server_sign")
+
 	client.SendCmd(msg)
 }
 

@@ -1,8 +1,8 @@
 package gnet
 
 import (
+	"base/log"
 	"command"
-	"fmt"
 	"sync"
 )
 
@@ -50,7 +50,7 @@ func (this *MessageQueue) Do(fun func(*command.Message) bool) {
 
 	defer func() {
 		if i > 100 {
-			fmt.Println("本次执行消息数:", i, len(this.chMsg), cap(this.chMsg))
+			log.Println("本次执行消息数:", i, len(this.chMsg), cap(this.chMsg))
 		}
 	}()
 

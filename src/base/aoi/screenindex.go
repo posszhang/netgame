@@ -1,4 +1,4 @@
-package main
+package aoi
 
 import (
 	"math"
@@ -24,6 +24,12 @@ const (
 	SCREEN_WIDTH  = 10
 	SCREEN_HEIGHT = 7
 )
+
+//场景元素
+type ISceneEntry interface {
+	GetID() uint32
+	GetPos() *Pos
+}
 
 type Pos struct {
 	X uint32

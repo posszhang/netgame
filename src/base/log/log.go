@@ -38,7 +38,7 @@ func NewLog(filename string) {
 
 func (log *Log) init() {
 
-	file := log.GetLogFile(log.filename)
+	file := log.OpenFile(log.filename)
 	if file == nil {
 		return
 	}
@@ -76,7 +76,7 @@ func (log *Log) SwapFile() {
 	sfile := fmt.Sprintf("%s_%d%02d%d-%02d", log.filename, lasttime.Year(), lasttime.Month(), lasttime.Day(), lasttime.Hour())
 	os.Rename(log.filename, sfile)
 
-	file := log.GetLogFile(log.filename)
+	file := log.OpenFile(log.filename)
 	if file == nil {
 		return
 	}
@@ -101,7 +101,7 @@ func (log *Log) TimeAction() {
 	}
 }
 
-func (log *Log) GetLogFile(filename string) *os.File {
+func (log *Log) OpenFile(filename string) *os.File {
 
 	file, err := os.OpenFile(filename, os.O_CREATE|os.O_APPEND|os.O_WRONLY, 0666)
 	if err != nil {

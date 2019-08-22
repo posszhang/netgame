@@ -8,6 +8,8 @@ package command;
 // 请求服务器连接验证
 message ReqServerVerify {
 	ServerInfo Info = 1;	
+	repeated uint32 Carelist = 2;
+	string Sign = 3;
 }
 
 // 返回服务器验证信息

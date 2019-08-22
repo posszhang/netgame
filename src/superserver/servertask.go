@@ -12,10 +12,18 @@ type ServerTask struct {
 	serverinfo command.ServerInfo
 
 	msgHandler gnet.MessageHandler
+
+	careList []int
 }
 
 func NewServerTask() *ServerTask {
-	task := &ServerTask{}
+	task := &ServerTask{
+		careList: make([]int, 1, 1),
+	}
+
+	// 所有服务器均需要关心路由服务器
+	task.careList[0] = command.RouteServer
+
 	task.Derived = task
 
 	task.init()
@@ -40,7 +48,9 @@ func (task *ServerTask) VerifyConn(msg *command.Message) bool {
 		return false
 	}
 
-	log.Println("新增服务器", task.GetServerInfo())
+	log.Println("新增服务器", task.GetServerInfo(), "，关心服务器", cmd.Carelist)
+
+	task.AddCareList(cmd.Carelist)
 
 	//服务器新增时，回调处理特殊逻辑
 	task.onServerAddCallback()
@@ -62,6 +72,8 @@ func (task *ServerTask) onServerAddCallback() {
 		//是路由服务器代表主动新增
 		serverManager.NotifyRouteServerAdd(task)
 	}
+
+	serverManager.CheckCareAndNotify(task)
 }
 
 func (task *ServerTask) RecycleConn() bool {
@@ -103,6 +115,28 @@ func (task *ServerTask) MsgParse(msg *command.Message) bool {
 	task.msgHandler.Process(msg)
 
 	return true
+}
+
+func (task *ServerTask) AddCareList(carelist []uint32) {
+
+	if carelist == nil {
+		return
+	}
+
+	for _, care := range carelist {
+		task.careList = append(task.careList, int(care))
+	}
+}
+
+func (task *ServerTask) IsCare(tp uint32) bool {
+
+	for _, t := range task.careList {
+		if t == tp {
+			return true
+		}
+	}
+
+	return false
 }
 
 func (task *ServerTask) onReqGatewayList(cmd proto.Message) {

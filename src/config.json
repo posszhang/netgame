@@ -1,10 +1,15 @@
 {
 	"global": {
 		"super_ip": "127.0.0.1",
-		"super_port": 8000
+		"super_port": 8000,
+		"server_sign": "!@@!D!D!2132f"
 	}
 
 	, "superserver": {
 		"port": 8000	
+	}
+
+	, "recordserver": {
+		"mongo": "mongodb://127.0.0.1:27017/onyuan"	
 	}
 }

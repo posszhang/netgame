@@ -4,6 +4,7 @@ import (
 	"base/gnet"
 	"base/log"
 	"command"
+	"github.com/golang/protobuf/proto"
 )
 
 type RouteManager struct {
@@ -36,4 +37,12 @@ func (mgr *RouteManager) MsgParse(msg *command.Message) bool {
 
 func (mgr *RouteManager) init() {
 
+	mgr.msgHandler.Reg(&command.RetGateRegUser{}, mgr.onRetGateRegUser)
+}
+
+func (mgr *RouteManager) onRetGateRegUser(cmd proto.Message) {
+
+	msg := cmd.(*command.RetGateRegUser)
+
+	log.Println("数据库返回用户数据:", msg)
 }

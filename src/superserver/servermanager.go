@@ -114,3 +114,34 @@ func (mgr *ServerManager) NotifyRouteServerAdd(task *ServerTask) {
 
 	mgr.SendCmdToAllExceptionType(msg, command.RouteServer)
 }
+
+func (mgr *ServerManager) CheckCareAndNotify(task *ServerTask) {
+
+	for _, server := range serverMap {
+
+		servertype := task.GetServerType()
+		if !server.IsCare(servertype) {
+			continue
+		}
+
+		//关心服务器
+		mgr.NotifyServerCare
+	}
+}
+
+// 获取我关心的服务器列表
+func (mgr *ServerManager) GetCareList(task *ServerTask) []*ServerTask {
+
+	serverlist := make([]*ServerTask, 0, 0)
+
+	for _, server := range serverMap {
+
+		if !task.IsCare(server.GetServerType()) {
+			continue
+		}
+
+		serverlist = append(serverlist, server)
+	}
+
+	return serverlist
+}
