@@ -55,6 +55,7 @@ func (task *ServerTask) VerifyConn(msg *command.Message) bool {
 	//服务器新增时，回调处理特殊逻辑
 	task.onServerAddCallback()
 
+	//统一返回关心服务器
 	snd := new(command.RetServerVerify)
 	task.SendCmd(snd)
 
@@ -72,8 +73,6 @@ func (task *ServerTask) onServerAddCallback() {
 		//是路由服务器代表主动新增
 		serverManager.NotifyRouteServerAdd(task)
 	}
-
-	serverManager.CheckCareAndNotify(task)
 }
 
 func (task *ServerTask) RecycleConn() bool {
@@ -128,7 +127,7 @@ func (task *ServerTask) AddCareList(carelist []uint32) {
 	}
 }
 
-func (task *ServerTask) IsCare(tp uint32) bool {
+func (task *ServerTask) IsCare(tp int) bool {
 
 	for _, t := range task.careList {
 		if t == tp {
